@@ -4,15 +4,20 @@ import './ContactSection.css'
 /**
  * Sección de contacto: una tarjeta con esquinas redondeadas y fondo
  * semitransparente (efecto "glass") que combina los datos de contacto con
- * un formulario. Sin backend propio, el formulario abre el cliente de
- * correo del usuario con los datos ya rellenados (mailto:) — si más
- * adelante se conecta un servicio de envío (Formspree, EmailJS, un
- * endpoint propio…), basta con sustituir `handleSubmit`.
+ * un formulario. El formulario envía el email de forma interna, mediante
+ * el script `public/send-mail.php` (se copia automáticamente a `dist/` al
+ * hacer `npm run build`), que usa la función mail() de PHP en el propio
+ * hosting — sin abrir ninguna app de correo ni depender de un servicio
+ * externo. Requiere que `send-mail.php` esté publicado en el mismo
+ * dominio que la web (ver el propio archivo para más detalle).
  */
+const ENDPOINT = '/send-mail.php'
+
 export default function ContactSection() {
   const ref = useRef(null)
   const [visible, setVisible] = useState(false)
-  const [sent, setSent] = useState(false)
+  // idle | sending | sent | error
+  const [status, setStatus] = useState('idle')
 
   useEffect(() => {
     const el = ref.current
@@ -27,18 +32,34 @@ export default function ContactSection() {
     return () => observer.disconnect()
   }, [])
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault()
     const form = event.target
     const nombre = form.nombre.value.trim()
     const email = form.email.value.trim()
     const mensaje = form.mensaje.value.trim()
+    const website = form.website.value // honeypot anti-spam, debe llegar vacío
 
-    const subject = encodeURIComponent(`Consulta desde la web — ${nombre || 'Sin nombre'}`)
-    const body = encodeURIComponent(`Nombre: ${nombre}\nEmail: ${email}\n\n${mensaje}`)
+    setStatus('sending')
 
-    window.location.href = `mailto:gestorautomovil65@gmail.com?subject=${subject}&body=${body}`
-    setSent(true)
+    try {
+      const res = await fetch(ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nombre, email, mensaje, website }),
+      })
+
+      const data = await res.json().catch(() => null)
+
+      if (res.ok && data?.ok) {
+        setStatus('sent')
+        form.reset()
+      } else {
+        setStatus('error')
+      }
+    } catch {
+      setStatus('error')
+    }
   }
 
   return (
@@ -63,13 +84,13 @@ export default function ContactSection() {
               </a>
             </li>
             <li>
-              <a href="mailto:gestorautomovil65@gmail.com">
-                gestorautomovil65@gmail.com
+              <a href="mailto:info@gestoriagia.es">
+                info@gestoriagia.es
               </a>
             </li>
             <li>
               <a
-                href="https://www.google.com/maps/place/Compramos+Tu+coche/@40.3920066,-3.6489924,3a,75y,90t/data=!3m8!1e2!3m6!1sCIHM0ogKEICAgIDlt8bicQ!2e10!3e12!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs-s%2FAHRPTWmLP8bojixVMDVEis6N-pZvBOx1FneFVFxHZnCImurW2-RkQS7ja9h6g7XNDFNNtYGf2sQWe-Rfw-2p2PS9YrXmsmCA95KZd-TAaqa-ZZasWli2tDBzapGw7ooJx3ObmB_9XTmC%3Dw152-h86-k-no!7i2048!8i1152!4m16!1m8!3m7!1s0xd4225c24d87b93f:0x86f259d8272f931a!2sC.+de+Carlos+Sol%C3%A9,+58,+Loc+1,+Puente+de+Vallecas,+28038+Madrid!3b1!8m2!3d40.3918826!4d-3.6490105!16s%2Fg%2F11vlz4qdyc!3m6!1s0xd4225cd6971d459:0xb9c724bd840ecc1f!8m2!3d40.3918826!4d-3.6490105!10e5!16s%2Fg%2F11y225w8g0?entry=ttu&g_ep=EgoyMDI2MDkxMy4wIKXMDSoASAFQAw%3D%3D"
+                href="https://maps.app.goo.gl/2K36mZ1CUt9V1BwT7"
                 target="_blank"
                 rel="noreferrer"
               >
@@ -93,10 +114,30 @@ export default function ContactSection() {
             Mensaje
             <textarea name="mensaje" rows={4} required />
           </label>
-          <button type="submit">Enviar</button>
-          {sent && (
-            <p className="contact-card__hint">
-              Se abrirá tu programa de correo con el mensaje listo para enviar.
+
+          {/* Honeypot anti-spam: campo oculto que un humano nunca rellena */}
+          <input
+            type="text"
+            name="website"
+            tabIndex={-1}
+            autoComplete="off"
+            className="contact-card__honeypot"
+            aria-hidden="true"
+          />
+
+          <button type="submit" disabled={status === 'sending'}>
+            {status === 'sending' ? 'Enviando…' : 'Enviar'}
+          </button>
+
+          {status === 'sent' && (
+            <p className="contact-card__hint contact-card__hint--ok">
+              Mensaje enviado. Te responderemos lo antes posible.
+            </p>
+          )}
+          {status === 'error' && (
+            <p className="contact-card__hint contact-card__hint--error">
+              No se pudo enviar el mensaje. Llámanos o escríbenos directamente
+              a info@gestoriagia.es.
             </p>
           )}
         </form>

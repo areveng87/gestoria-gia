@@ -14,10 +14,21 @@
   cursor: pointer;
   display: flex;
   align-items: center;
+  transition: background-color 0.15s ease;
 }
 
 .marquee-bar:hover {
   background: #f4f4f4;
+}
+
+/* Flash de confirmación al hacer clic: se invierten los colores un segundo */
+.marquee-bar.marquee-bar--flash,
+.marquee-bar.marquee-bar--flash:hover {
+  background: #0a0a0a;
+}
+
+.marquee-bar.marquee-bar--flash .marquee-bar__text {
+  color: #ffffff;
 }
 
 .marquee-bar__track {
@@ -25,10 +36,6 @@
   width: max-content;
   will-change: transform;
   animation: marquee-scroll 14s linear infinite;
-}
-
-.marquee-bar:hover .marquee-bar__track {
-  animation-play-state: paused;
 }
 
 .marquee-bar__group {
@@ -46,6 +53,7 @@
   font-size: 0.8rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
+  transition: color 0.15s ease;
 }
 
 @keyframes marquee-scroll {
