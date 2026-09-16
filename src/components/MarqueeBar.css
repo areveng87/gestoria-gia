@@ -44,7 +44,9 @@
 }
 
 .marquee-bar__text {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
   padding: 0 1.5rem;
   white-space: nowrap;
   color: #0a0a0a;
@@ -54,6 +56,11 @@
   letter-spacing: 0.14em;
   text-transform: uppercase;
   transition: color 0.15s ease;
+}
+
+.marquee-bar__cursor {
+  flex-shrink: 0;
+  transform: translateY(1px);
 }
 
 @keyframes marquee-scroll {
