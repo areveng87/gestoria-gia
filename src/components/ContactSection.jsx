@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import './ContactSection.css'
+import PrivacyPolicyModal from './PrivacyPolicyModal'
 
 /**
  * Sección de contacto: una tarjeta con esquinas redondeadas y fondo
@@ -18,6 +19,7 @@ export default function ContactSection() {
   const [visible, setVisible] = useState(false)
   // idle | sending | sent | error
   const [status, setStatus] = useState('idle')
+  const [showPrivacy, setShowPrivacy] = useState(false)
 
   useEffect(() => {
     const el = ref.current
@@ -36,8 +38,14 @@ export default function ContactSection() {
     event.preventDefault()
     const form = event.target
     const nombre = form.nombre.value.trim()
+    const telefono = form.telefono.value.trim()
     const email = form.email.value.trim()
-    const mensaje = form.mensaje.value.trim()
+    const provincia = form.provincia.value
+    const marca = form.marca.value
+    const modelo = form.modelo.value.trim()
+    const anio = form.anio.value.trim()
+    const kilometraje = form.kilometraje.value.trim()
+    const estado = form.estado.value
     const website = form.website.value // honeypot anti-spam, debe llegar vacío
 
     setStatus('sending')
@@ -46,7 +54,18 @@ export default function ContactSection() {
       const res = await fetch(ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nombre, email, mensaje, website }),
+        body: JSON.stringify({
+          nombre,
+          telefono,
+          email,
+          provincia,
+          marca,
+          modelo,
+          anio,
+          kilometraje,
+          estado,
+          website,
+        }),
       })
 
       const data = await res.json().catch(() => null)
@@ -102,17 +121,106 @@ export default function ContactSection() {
         </div>
 
         <form className="contact-card__form" onSubmit={handleSubmit}>
+          <div className="contact-card__form-row">
+            <label>
+              Nombre
+              <input type="text" name="nombre" autoComplete="name" required />
+            </label>
+            <label>
+              Teléfono
+              <input type="tel" name="telefono" autoComplete="tel" required />
+            </label>
+          </div>
+
+          <div className="contact-card__form-row">
+            <label>
+              Email
+              <input type="email" name="email" autoComplete="email" required />
+            </label>
+            <label>
+              Provincia
+              <select name="provincia" defaultValue="Madrid">
+                <option value="Madrid">Madrid</option>
+                <option value="Toledo">Toledo</option>
+                <option value="Guadalajara">Guadalajara</option>
+                <option value="Otra">Otra provincia</option>
+              </select>
+            </label>
+          </div>
+
+          <div className="contact-card__form-row">
+            <label>
+              Marca
+              <select name="marca" defaultValue="" required>
+                <option value="" disabled>
+                  Selecciona tu marca
+                </option>
+                <option>Alfa Romeo</option>
+                <option>Audi</option>
+                <option>BMW</option>
+                <option>Citroën</option>
+                <option>Cupra</option>
+                <option>Fiat</option>
+                <option>Ford</option>
+                <option>Hyundai</option>
+                <option>Kia</option>
+                <option>Mercedes-Benz</option>
+                <option>Nissan</option>
+                <option>Opel</option>
+                <option>Peugeot</option>
+                <option>Porsche</option>
+                <option>Renault</option>
+                <option>Seat</option>
+                <option>Skoda</option>
+                <option>Toyota</option>
+                <option>Volkswagen</option>
+                <option>Volvo</option>
+                <option value="Otra">Otra marca / Furgoneta</option>
+              </select>
+            </label>
+            <label>
+              Modelo
+              <input type="text" name="modelo" placeholder="Ej: A3 / Focus" required />
+            </label>
+          </div>
+
+          <div className="contact-card__form-row">
+            <label>
+              Año
+              <input type="number" name="anio" placeholder="Ej: 2018" min="1950" max="2100" />
+            </label>
+            <label>
+              Kilometraje
+              <input type="number" name="kilometraje" placeholder="Ej: 95000" min="0" />
+            </label>
+          </div>
+
           <label>
-            Nombre
-            <input type="text" name="nombre" autoComplete="name" required />
+            Estado del vehículo / Observaciones
+            <select name="estado" defaultValue="" required>
+              <option value="" disabled>
+                Selecciona una opción
+              </option>
+              <option>Perfecto estado con ITV</option>
+              <option value="Sin ITV / Averiado">Sin ITV o con desperfectos</option>
+              <option>Interesado en alta gama a la carta</option>
+            </select>
           </label>
-          <label>
-            Email
-            <input type="email" name="email" autoComplete="email" required />
-          </label>
-          <label>
-            Mensaje
-            <textarea name="mensaje" rows={4} required />
+
+          <label className="contact-card__checkbox">
+            <input type="checkbox" name="privacidad" required />
+            <span>
+              He leído y acepto la{' '}
+              <a
+                href="/politica-privacidad"
+                onClick={(event) => {
+                  event.preventDefault()
+                  setShowPrivacy(true)
+                }}
+              >
+                Política de Privacidad
+              </a>
+            </span>
           </label>
 
           {/* Honeypot anti-spam: campo oculto que un humano nunca rellena */}
@@ -126,12 +234,12 @@ export default function ContactSection() {
           />
 
           <button type="submit" disabled={status === 'sending'}>
-            {status === 'sending' ? 'Enviando…' : 'Enviar'}
+            {status === 'sending' ? 'Enviando…' : 'Tasar mi coche'}
           </button>
 
           {status === 'sent' && (
             <p className="contact-card__hint contact-card__hint--ok">
-              Mensaje enviado. Te responderemos lo antes posible.
+              Solicitud enviada. Te responderemos lo antes posible.
             </p>
           )}
           {status === 'error' && (
@@ -142,6 +250,8 @@ export default function ContactSection() {
           )}
         </form>
       </div>
+
+      <PrivacyPolicyModal open={showPrivacy} onClose={() => setShowPrivacy(false)} />
     </section>
   )
 }

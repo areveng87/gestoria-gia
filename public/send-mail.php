@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 // --- Configuración ---
 $destinatario = 'info@gestoriagia.es';
-$asuntoBase   = 'Consulta desde la web — Gestoría G.I.A';
+$asuntoBase   = 'Solicitud de tasación desde la web — Gestoría G.I.A';
 
 // --- Lectura de datos (JSON o formulario clásico) ---
 $input = json_decode(file_get_contents('php://input'), true);
@@ -35,9 +35,15 @@ if (!is_array($input)) {
     $input = $_POST;
 }
 
-$nombre  = trim($input['nombre'] ?? '');
-$email   = trim($input['email'] ?? '');
-$mensaje = trim($input['mensaje'] ?? '');
+$nombre       = trim($input['nombre'] ?? '');
+$telefono     = trim($input['telefono'] ?? '');
+$email        = trim($input['email'] ?? '');
+$provincia    = trim($input['provincia'] ?? '');
+$marca        = trim($input['marca'] ?? '');
+$modelo       = trim($input['modelo'] ?? '');
+$anio         = trim($input['anio'] ?? '');
+$kilometraje  = trim($input['kilometraje'] ?? '');
+$estado       = trim($input['estado'] ?? '');
 
 // Honeypot anti-spam: si este campo oculto viene relleno, se descarta en silencio
 $honeypot = trim($input['website'] ?? '');
@@ -46,7 +52,7 @@ if ($honeypot !== '') {
     exit;
 }
 
-if ($nombre === '' || $email === '' || $mensaje === '') {
+if ($nombre === '' || $telefono === '' || $email === '' || $marca === '' || $modelo === '' || $estado === '') {
     http_response_code(422);
     echo json_encode(['ok' => false, 'error' => 'Faltan campos obligatorios']);
     exit;
@@ -58,14 +64,32 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     exit;
 }
 
-$nombreLimpio  = str_replace(["\r", "\n"], '', $nombre);
-$emailLimpio   = str_replace(["\r", "\n"], '', $email);
-$asunto        = $asuntoBase . ' — ' . $nombreLimpio;
+$limpiar = function ($valor) {
+    return str_replace(["\r", "\n"], '', $valor);
+};
 
-$cuerpo  = "Nuevo mensaje desde el formulario de contacto de la web:\n\n";
+$nombreLimpio      = $limpiar($nombre);
+$telefonoLimpio    = $limpiar($telefono);
+$emailLimpio       = $limpiar($email);
+$provinciaLimpia   = $limpiar($provincia);
+$marcaLimpia       = $limpiar($marca);
+$modeloLimpio      = $limpiar($modelo);
+$anioLimpio        = $limpiar($anio);
+$kilometrajeLimpio = $limpiar($kilometraje);
+$estadoLimpio      = $limpiar($estado);
+
+$asunto = $asuntoBase . ' — ' . $marcaLimpia . ' ' . $modeloLimpio . ' (' . $nombreLimpio . ')';
+
+$cuerpo  = "Nueva solicitud de tasación desde la web:\n\n";
 $cuerpo .= "Nombre: {$nombreLimpio}\n";
-$cuerpo .= "Email: {$emailLimpio}\n\n";
-$cuerpo .= "Mensaje:\n{$mensaje}\n";
+$cuerpo .= "Teléfono: {$telefonoLimpio}\n";
+$cuerpo .= "Email: {$emailLimpio}\n";
+$cuerpo .= "Provincia: {$provinciaLimpia}\n\n";
+$cuerpo .= "Marca: {$marcaLimpia}\n";
+$cuerpo .= "Modelo: {$modeloLimpio}\n";
+$cuerpo .= "Año: {$anioLimpio}\n";
+$cuerpo .= "Kilometraje: {$kilometrajeLimpio}\n";
+$cuerpo .= "Estado del vehículo / Observaciones: {$estadoLimpio}\n";
 
 // El remitente técnico debe ser del propio dominio para evitar que los
 // proveedores de correo marquen el envío como spam (SPF/DMARC).

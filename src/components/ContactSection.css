@@ -96,8 +96,21 @@
   font-weight: 100;
 }
 
+.contact-card__form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+@media (max-width: 480px) {
+  .contact-card__form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
 .contact-card__form input,
-.contact-card__form textarea {
+.contact-card__form textarea,
+.contact-card__form select {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 12px;
@@ -109,11 +122,50 @@
   resize: vertical;
 }
 
+.contact-card__form select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  padding-right: 36px;
+}
+
+.contact-card__form select option {
+  color: #0a0a0a;
+}
+
 .contact-card__form input:focus,
-.contact-card__form textarea:focus {
+.contact-card__form textarea:focus,
+.contact-card__form select:focus {
   outline: none;
   border-color: rgba(255, 255, 255, 0.55);
-  background: rgba(255, 255, 255, 0.12);
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+.contact-card__checkbox {
+  flex-direction: row !important;
+  align-items: flex-start;
+  gap: 10px !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+  font-size: 0.85rem !important;
+  color: #d8d8d8;
+}
+
+.contact-card__checkbox input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  accent-color: #ffffff;
+}
+
+.contact-card__checkbox a {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .contact-card__form button {
