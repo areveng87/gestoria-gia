@@ -1,0 +1,68 @@
+.scroll-video {
+  position: relative;
+  width: 100%;
+  background: #000;
+}
+
+.scroll-video__sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+}
+
+.scroll-video__el {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.scroll-video__overlay {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 0 24px;
+  pointer-events: none;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.55);
+}
+
+.scroll-video__title {
+  font-family: 'Helvetica Neue Thin', sans-serif;
+  font-weight: 100;
+  font-size: clamp(2.5rem, 8vw, 6rem);
+  letter-spacing: 0.04em;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.scroll-video__subtitle {
+  margin-top: 1rem;
+  font-size: clamp(1rem, 2vw, 1.35rem);
+  letter-spacing: 0.08em;
+  color: #d9d9d9;
+  text-transform: uppercase;
+}
+
+.scroll-video__hint {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #bbbbbb;
+  animation: scroll-video-bounce 1.8s ease-in-out infinite;
+}
+
+@keyframes scroll-video-bounce {
+  0%, 100% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, 8px); }
+}

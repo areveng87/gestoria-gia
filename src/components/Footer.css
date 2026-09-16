@@ -1,0 +1,45 @@
+.site-footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  height: var(--footer-height, 56px);
+  background: #000000;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0 clamp(16px, 4vw, 48px);
+  font-family: 'Helvetica Neue Thin', sans-serif;
+  font-weight: 100;
+  font-size: clamp(0.7rem, 1.6vw, 0.9rem);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.site-footer__contact {
+  text-decoration: none;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.site-footer__brand,
+.site-footer__copy {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.site-footer__copy {
+  opacity: 0.65;
+}
+
+/* En pantallas muy estrechas, prioriza marca + contacto */
+@media (max-width: 480px) {
+  .site-footer__copy {
+    display: none;
+  }
+}

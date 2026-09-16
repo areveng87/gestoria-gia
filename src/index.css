@@ -1,0 +1,69 @@
+@font-face {
+  font-family: 'Helvetica Neue Thin';
+  src: url('/fonts/HelveticaNeueThin.otf') format('opentype');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Helvetica Neue Black';
+  src: url('/fonts/HelveticaNeueBlack.otf') format('opentype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Helvetica Neue Medium';
+  src: url('/fonts/HelveticaNeueMedium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --bg: #0a0a0a;
+  --fg: #ffffff;
+  --footer-height: 56px;
+  --marquee-height: 34px;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+body {
+  font-family: 'Helvetica Neue Thin', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 100;
+  -webkit-font-smoothing: antialiased;
+  /* deja hueco para el footer y el cintillo fijos */
+  padding-bottom: calc(var(--footer-height) + var(--marquee-height));
+}
+
+#root {
+  overflow-x: hidden;
+}
+
+/* El contenido flota por encima del vídeo de fondo fijo */
+.content {
+  position: relative;
+  z-index: 1;
+}
+
+h1, h2, h3, p {
+  margin: 0;
+  font-weight: 100;
+}
+
+a {
+  color: inherit;
+}

@@ -1,0 +1,121 @@
+.fade-section {
+  position: relative;
+  width: 100%;
+  min-height: 55vh;
+  display: flex;
+  align-items: center;
+  padding: 3vh 8vw;
+}
+
+.fade-section__inner {
+  max-width: 760px;
+  opacity: 0;
+  transform: translateY(36px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
+}
+
+.fade-section.is-visible .fade-section__inner {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.fade-section--right {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.fade-section--right .fade-section__inner {
+  margin-left: auto;
+}
+
+.fade-section--center {
+  justify-content: center;
+  text-align: center;
+}
+
+.fade-section--center .fade-section__inner {
+  margin: 0 auto;
+  max-width: 900px;
+}
+
+/* Variante de portada: algo más alta y con un título grande */
+.fade-section--hero {
+  min-height: 85vh;
+}
+
+.fade-section--hero .fade-section__title {
+  font-size: clamp(2.5rem, 8vw, 6rem);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 1rem;
+}
+
+.fade-section--hero .fade-section__eyebrow {
+  display: none;
+}
+
+.fade-section__eyebrow {
+  display: block;
+  font-size: 0.8rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #d4d4d4;
+  margin-bottom: 1.25rem;
+}
+
+.fade-section__title {
+  font-family: 'Helvetica Neue Thin', sans-serif;
+  font-weight: 100;
+  font-size: clamp(1.8rem, 4.5vw, 3.2rem);
+  color: #fff;
+  letter-spacing: 0.01em;
+  margin-bottom: 1.5rem;
+}
+
+.fade-section__body {
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  line-height: 1.7;
+  color: #e6e6e6;
+  font-weight: 100;
+}
+
+.fade-section__body p + p {
+  margin-top: 1rem;
+}
+
+.fade-section__body a {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(255, 255, 255, 0.5);
+  transition: text-decoration-color 0.2s ease;
+}
+
+.fade-section__body a:hover {
+  text-decoration-color: #fff;
+}
+
+.fade-section__hint {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #d4d4d4;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  animation: fade-section-bounce 1.8s ease-in-out infinite;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+}
+
+.fade-section.is-visible .fade-section__hint {
+  opacity: 1;
+}
+
+@keyframes fade-section-bounce {
+  0%, 100% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, 8px); }
+}
