@@ -70,7 +70,7 @@ $cuerpo .= "Mensaje:\n{$mensaje}\n";
 // El remitente técnico debe ser del propio dominio para evitar que los
 // proveedores de correo marquen el envío como spam (SPF/DMARC).
 $dominio = $_SERVER['HTTP_HOST'] ?? 'localhost';
-$from    = 'info@' . preg_replace('/^www\./', '', $dominio);
+$from    = 'no-responder@' . preg_replace('/^www\./', '', $dominio);
 
 $cabeceras  = "From: Formulario Web <{$from}>\r\n";
 $cabeceras .= "Reply-To: {$emailLimpio}\r\n";
